@@ -54,6 +54,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CommissieWerker.cs" />
+    <Compile Include="StukWerker.cs" />
+    <Compile Include="UurWerker.cs" />
+    <Compile Include="Werknemer.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
