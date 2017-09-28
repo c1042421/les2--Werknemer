@@ -20,6 +20,7 @@ namespace oefWerknemer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string werknemerType;
         public MainWindow()
         {
             InitializeComponent();
@@ -27,14 +28,33 @@ namespace oefWerknemer
 
         private void txtToevoegen_Click(object sender, RoutedEventArgs e)
         {
+            Werknemer werknemer;
 
+            switch (werknemerType)
+            {
+                case WerknemerType.CommissieWerker:
+                    
+                    break;
+                case WerknemerType.StukWerker:
+                    
+                    break;
+                case WerknemerType.Uurwerker:
+                   
+                    break;
+                case WerknemerType.Werknemer:
+                    
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void radioButtonClicked(object sender, RoutedEventArgs e)
         {
             RadioButton rb = (RadioButton)sender;
 
-            updateViewFor(rb.Name);
+            werknemerType = rb.Name;
+            updateViewFor(werknemerType);
         }
 
         private void updateViewFor(string type)
