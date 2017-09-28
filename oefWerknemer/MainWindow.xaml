@@ -19,10 +19,10 @@
         </Grid.RowDefinitions>
         <GroupBox Header="Type Werkenemer">
             <StackPanel Orientation="Horizontal" Margin="5">
-                <RadioButton GroupName="werknemer" Content="Commissiewerker" Margin="5 0"></RadioButton>
-                <RadioButton GroupName="werknemer" Content="StukWerker" Margin="5 0"></RadioButton>
-                <RadioButton GroupName="werknemer" Content="Uurwerker" Margin="5 0"></RadioButton>
-                <RadioButton GroupName="werknemer" Content="Werknemer" Margin="5 0"></RadioButton>
+                <RadioButton Name="rbCommissieWerker" GroupName="werknemer" Content="Commissiewerker" Margin="5 0" Height="18" VerticalAlignment="Top" Click="radioButtonClicked"></RadioButton>
+                <RadioButton Name="rbStukWerker" GroupName="werknemer" Content="StukWerker" Margin="5 0" Click="radioButtonClicked"></RadioButton>
+                <RadioButton Name="rbUurWerker" GroupName="werknemer" Content="Uurwerker" Margin="5 0" Click="radioButtonClicked"></RadioButton>
+                <RadioButton Name="rbWerknemer"  GroupName="werknemer" Content="Werknemer" Margin="5 0" Click="radioButtonClicked"></RadioButton>
             </StackPanel>
         </GroupBox>
         <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="5">
@@ -37,14 +37,18 @@
             <Label Content="Loon" Margin="5" Width="100"></Label>
             <TextBox Name="txtLoon" Margin="5" Width="200" Height="25"></TextBox>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Grid.Row="4" Margin="5">
+        <StackPanel Name="stpAantal" Orientation="Horizontal" Grid.Row="4" Margin="5">
             <Label Content="Aantal" Margin="5" Width="100"></Label>
             <TextBox Name="txtAantal" Margin="5" Width="200" Height="25"></TextBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Row="5" Margin="5">
-            <Label Content="Commissie" Margin="5" Width="100"></Label>
-            <TextBox Name="txtCommissie" Margin="5" Width="200" Height="25"></TextBox>
-            <Button Width="150" Height="25" Margin="5" Content="Toevoegen" Name="txtToevoegen"></Button>
+            <StackPanel Name="stpCommissie" Width="320" Orientation="Horizontal">
+                <Label Content="Commissie" Margin="5" Width="100"></Label>
+                <TextBox Name="txtCommissie" Margin="5" Width="200" Height="25"></TextBox>
+            </StackPanel>
+            <StackPanel>
+                <Button Width="150" Height="25" Margin="5" Content="Toevoegen" Name="txtToevoegen" Click="txtToevoegen_Click"></Button>
+            </StackPanel>
         </StackPanel>
         <TextBox Grid.Row="6" Margin="10 5" IsReadOnly="True" Name="txtOutput"></TextBox>
     </Grid>
