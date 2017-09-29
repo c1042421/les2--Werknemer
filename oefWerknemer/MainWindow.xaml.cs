@@ -30,23 +30,107 @@ namespace oefWerknemer
         {
             Werknemer werknemer;
 
+            string naam = txtNaam.Text;
+            string voornaam = txtVoornaam.Text;
+
+            if (TextBoxesAreValid())
+            {
+                decimal loon = decimal.Parse(txtLoon.Text);
+                int aantal;
+
+                switch (werknemerType)
+                {
+                    case WerknemerType.CommissieWerker:
+                        decimal commissie = decimal.Parse(txtCommissie.Text);
+                        aantal = int.Parse(txtAantal.Text);
+
+                        werknemer = new CommissieWerker(naam, voornaam, loon, commissie, aantal);
+                        break;
+
+                    case WerknemerType.StukWerker:
+                        aantal = int.Parse(txtAantal.Text);
+
+                        werknemer = new StukWerker(naam, voornaam, loon, aantal);
+                        break;
+
+                    case WerknemerType.Uurwerker:
+                        aantal = int.Parse(txtAantal.Text);
+
+                        werknemer = new UurWerker(naam, voornaam, loon, aantal);
+                        break;
+
+                    default:
+                        werknemer = new Werknemer(naam, voornaam, loon);
+                        break;
+                }
+
+                VoegToeAanOutput(werknemer.ToString());
+            }else
+            {
+                ShowErrorMessage();
+            }
+        }
+
+        private void VoegToeAanOutput(string message)
+        {
+            txtOutput.Text += message + Environment.NewLine;
+        }
+
+        private void ShowErrorMessage()
+        {
+            if (!LoonIsValid())
+            {
+                toonMessageBoxMet("Gelieve een numeriek getal in te geven bij loon");
+            } else if (!AantalIsValid())
+            {
+                toonMessageBoxMet("Gelieve een numeriek getal in te geven bij aantal");
+            } else if (!CommissieIsValid())
+            {
+                toonMessageBoxMet("Gelieve een numeriek getal in te geven bij commissie");
+            }
+        }
+
+        private bool TextBoxesAreValid()
+        {
             switch (werknemerType)
             {
                 case WerknemerType.CommissieWerker:
-                    
-                    break;
+                    return CommissieIsValid() && LoonIsValid() && AantalIsValid();
+
                 case WerknemerType.StukWerker:
-                    
-                    break;
                 case WerknemerType.Uurwerker:
-                   
-                    break;
-                case WerknemerType.Werknemer:
-                    
-                    break;
+                    return LoonIsValid() && AantalIsValid();
+
                 default:
-                    break;
+                    return LoonIsValid();
             }
+        }
+
+        private bool LoonIsValid()
+        {
+            return CheckTextBoxForDecimalValidation(txtLoon);
+        }
+
+        private bool CheckTextBoxForDecimalValidation(TextBox tb)
+        {
+            decimal dec;
+            return decimal.TryParse(tb.Text, out dec);
+        }
+
+        private bool CommissieIsValid()
+        {
+            return CheckTextBoxForDecimalValidation(txtCommissie);
+        }
+
+        private bool AantalIsValid()
+        {
+            int i;
+            return int.TryParse(txtAantal.Text, out i);
+        }
+
+        private void toonMessageBoxMet(string message)
+        {
+            MessageBox.Show(message, "Fout!", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private void radioButtonClicked(object sender, RoutedEventArgs e)

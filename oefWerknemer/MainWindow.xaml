@@ -19,7 +19,7 @@
         </Grid.RowDefinitions>
         <GroupBox Header="Type Werkenemer">
             <StackPanel Orientation="Horizontal" Margin="5">
-                <RadioButton Name="rbCommissieWerker" GroupName="werknemer" Content="Commissiewerker" Margin="5 0" Height="18" VerticalAlignment="Top" Click="radioButtonClicked"></RadioButton>
+                <RadioButton IsChecked="True" Name="rbCommissieWerker" GroupName="werknemer" Content="Commissiewerker" Margin="5 0" Height="18" VerticalAlignment="Top" Click="radioButtonClicked"></RadioButton>
                 <RadioButton Name="rbStukWerker" GroupName="werknemer" Content="StukWerker" Margin="5 0" Click="radioButtonClicked"></RadioButton>
                 <RadioButton Name="rbUurWerker" GroupName="werknemer" Content="Uurwerker" Margin="5 0" Click="radioButtonClicked"></RadioButton>
                 <RadioButton Name="rbWerknemer"  GroupName="werknemer" Content="Werknemer" Margin="5 0" Click="radioButtonClicked"></RadioButton>
