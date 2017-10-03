@@ -71,7 +71,7 @@ namespace oefWerknemer
                         break;
                 }
 
-                VoegToeAanOutput(werknemer);
+                VoegToeAanOutputAndRefresh(werknemer);
             }else
             {
                 ShowErrorMessage();
@@ -84,7 +84,7 @@ namespace oefWerknemer
             return new BitmapImage(uri);
         }
 
-        private void VoegToeAanOutput(Werknemer werknemer)
+        private void VoegToeAanOutputAndRefresh(Werknemer werknemer)
         {
             werknemers.Add(werknemer);
             lbOutput.ItemsSource = null;
