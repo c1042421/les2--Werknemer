@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace oefWerknemer
 {
@@ -14,7 +15,7 @@ namespace oefWerknemer
         public int Aantal { get => _aantal; set => _aantal = value; }
         public decimal Commissie { get => _commissie; set => _commissie = value; }
 
-        public CommissieWerker(string naam, string voornaam, decimal loon, decimal commissie, int aantal) : base(naam, voornaam, loon)
+        public CommissieWerker(string naam, string voornaam, decimal loon, decimal commissie, int aantal, BitmapImage geslacht) : base(naam, voornaam, loon, geslacht)
         {
             Commissie = commissie;
             Aantal = aantal;
@@ -22,7 +23,7 @@ namespace oefWerknemer
 
         public override string ToString()
         {
-            return string.Format("{0} - {1}", base.ToString(), "CommissieWerker");
+            return string.Format("{0} {1}", base.ToString(), "CommissieWerker");
         }
 
         public override decimal Verdiensten()

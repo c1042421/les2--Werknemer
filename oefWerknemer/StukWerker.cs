@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace oefWerknemer
 {
@@ -12,7 +13,7 @@ namespace oefWerknemer
 
         public int Aantal { get => _aantal; set => _aantal = value; }
     
-        public StukWerker(string naam, string voornaam, decimal loonPerStuk, int aantal) : base(naam, voornaam, loonPerStuk)
+        public StukWerker(string naam, string voornaam, decimal loonPerStuk, int aantal, BitmapImage geslacht ) : base(naam, voornaam, loonPerStuk, geslacht)
         {
             Aantal = aantal;
         }
@@ -24,7 +25,7 @@ namespace oefWerknemer
 
         public override string ToString()
         {
-            return string.Format("{0} - {1}", base.ToString(), "StukWerker");
+            return string.Format("{0} {1}", base.ToString(), "StukWerker");
         }
     }
 }

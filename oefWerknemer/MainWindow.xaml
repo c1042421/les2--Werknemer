@@ -36,6 +36,20 @@
         <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="5">
             <Label Content="Loon" Margin="5" Width="100"></Label>
             <TextBox Name="txtLoon" Margin="5" Width="200" Height="25"></TextBox>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10">
+                <RadioButton IsChecked="True" Name="rbMan" GroupName="geslacht">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="images/man.jpg" Height="15"  ></Image>
+                        <Label>Man</Label>
+                    </StackPanel>
+                </RadioButton>
+                <RadioButton Name="rbVrouw" GroupName="geslacht">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="images/vrouw.jpg" Height="15"></Image>
+                        <Label>Vrouw</Label>
+                    </StackPanel>
+                </RadioButton>
+            </StackPanel>
         </StackPanel>
         <StackPanel Name="stpAantal" Orientation="Horizontal" Grid.Row="4" Margin="5">
             <Label Content="Aantal" Margin="5" Width="100"></Label>
@@ -50,6 +64,15 @@
                 <Button Width="150" Height="25" Margin="5" Content="Toevoegen" Name="txtToevoegen" Click="txtToevoegen_Click"></Button>
             </StackPanel>
         </StackPanel>
-        <TextBox Grid.Row="6" Margin="10 5" IsReadOnly="True" Name="txtOutput"></TextBox>
+        <ListBox Name="lbOutput" Grid.Row="6" Margin="5">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding Path=Geslacht}" Height="15"></Image>
+                        <TextBlock Name="tbGegevens" Text="{Binding Path=Gegevens}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>

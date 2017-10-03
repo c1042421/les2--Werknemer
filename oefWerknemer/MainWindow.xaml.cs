@@ -21,9 +21,14 @@ namespace oefWerknemer
     public partial class MainWindow : Window
     {
         private string werknemerType;
+        List<Werknemer> werknemers;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            werknemers = new List<Werknemer>();
+            lbOutput.ItemsSource = werknemers;
         }
 
         private void txtToevoegen_Click(object sender, RoutedEventArgs e)
@@ -37,6 +42,8 @@ namespace oefWerknemer
             {
                 decimal loon = decimal.Parse(txtLoon.Text);
                 int aantal;
+                string geslachtUrl = rbMan.IsChecked ?? false ? "man.jpg" : "vrouw.jpg"; 
+                BitmapImage geslacht = MakeBitmapImageFor("images/" + geslachtUrl);
 
                 switch (werknemerType)
                 {
@@ -44,36 +51,44 @@ namespace oefWerknemer
                         decimal commissie = decimal.Parse(txtCommissie.Text);
                         aantal = int.Parse(txtAantal.Text);
 
-                        werknemer = new CommissieWerker(naam, voornaam, loon, commissie, aantal);
+                        werknemer = new CommissieWerker(naam, voornaam, loon, commissie, aantal, geslacht);
                         break;
 
                     case WerknemerType.StukWerker:
                         aantal = int.Parse(txtAantal.Text);
 
-                        werknemer = new StukWerker(naam, voornaam, loon, aantal);
+                        werknemer = new StukWerker(naam, voornaam, loon, aantal, geslacht);
                         break;
 
                     case WerknemerType.Uurwerker:
                         aantal = int.Parse(txtAantal.Text);
 
-                        werknemer = new UurWerker(naam, voornaam, loon, aantal);
+                        werknemer = new UurWerker(naam, voornaam, loon, aantal, geslacht);
                         break;
 
                     default:
-                        werknemer = new Werknemer(naam, voornaam, loon);
+                        werknemer = new Werknemer(naam, voornaam, loon, geslacht);
                         break;
                 }
 
-                VoegToeAanOutput(werknemer.ToString());
+                VoegToeAanOutput(werknemer);
             }else
             {
                 ShowErrorMessage();
             }
         }
 
-        private void VoegToeAanOutput(string message)
+        private BitmapImage MakeBitmapImageFor(string url)
         {
-            txtOutput.Text += message + Environment.NewLine;
+            Uri uri = new Uri(url, UriKind.Relative);
+            return new BitmapImage(uri);
+        }
+
+        private void VoegToeAanOutput(Werknemer werknemer)
+        {
+            werknemers.Add(werknemer);
+            lbOutput.ItemsSource = null;
+            lbOutput.ItemsSource = werknemers;
         }
 
         private void ShowErrorMessage()
@@ -90,20 +105,26 @@ namespace oefWerknemer
             }
         }
 
+        private void toonMessageBoxMet(string message)
+        {
+            MessageBox.Show(message, "Fout!", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
         private bool TextBoxesAreValid()
         {
+            bool validation = LoonIsValid();
             switch (werknemerType)
             {
-                case WerknemerType.CommissieWerker:
-                    return CommissieIsValid() && LoonIsValid() && AantalIsValid();
-
                 case WerknemerType.StukWerker:
                 case WerknemerType.Uurwerker:
-                    return LoonIsValid() && AantalIsValid();
-
-                default:
-                    return LoonIsValid();
+                    validation = validation && LoonIsValid() && AantalIsValid();
+                    break;
+                case WerknemerType.CommissieWerker:
+                    validation = validation && CommissieIsValid();
+                    break;
             }
+
+            return validation;
         }
 
         private bool LoonIsValid()
@@ -126,11 +147,6 @@ namespace oefWerknemer
         {
             int i;
             return int.TryParse(txtAantal.Text, out i);
-        }
-
-        private void toonMessageBoxMet(string message)
-        {
-            MessageBox.Show(message, "Fout!", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private void radioButtonClicked(object sender, RoutedEventArgs e)
@@ -165,7 +181,6 @@ namespace oefWerknemer
                     break;
             }
         }
-
     }
 }
 
