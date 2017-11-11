@@ -11,12 +11,19 @@ namespace oefWerknemer
     {
         private double _uren;
 
-        public double Uren { get => _uren; set => _uren = value; }
+        public double Uren { get => _uren; set
+            {
+                _uren = value;
+                RaisedPropertyChanged("Uren");
+            }
+        }
 
         public UurWerker(string naam, string voornaam, decimal loon, int aantalUren, BitmapImage geslacht): base(naam, voornaam, loon, geslacht)
         {
             Uren = aantalUren;
         }
+
+        public UurWerker(): this("", "", 0, 0, null) { }
 
         public override decimal Verdiensten()
         {
@@ -27,6 +34,21 @@ namespace oefWerknemer
         public override string ToString()
         {
             return string.Format("{0} {1}", base.ToString(), "UurWerker");
+        }
+
+        public override string this[string columnName]
+        {
+            get
+            {
+                bool urenIsKleinerDanNul = columnName == "Uren" && Uren < 0;
+
+                if (urenIsKleinerDanNul)
+                {
+                    return "Uren moet groter of gelijk zijn dan 0!";
+                }
+
+                return base[columnName];
+            }
         }
     }
 }

@@ -1,18 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace oefWerknemer
 {
-    class Werknemer
+    class Werknemer : INotifyPropertyChanged, IDataErrorInfo
     {
         private decimal _loon;
         private string _naam;
         private string _voornaam;
         private BitmapImage _geslacht;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool isValid() => string.IsNullOrEmpty(Error);
+
+        public void RaisedPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
         public Werknemer( string naam, string voornaam, decimal loon, BitmapImage geslacht)
         {
@@ -22,11 +33,83 @@ namespace oefWerknemer
             Geslacht = geslacht;
         }
 
-        public decimal Loon { get => _loon; set => _loon = value; }
-        public string Naam { get => _naam; set => _naam = value; }
-        public string Voornaam { get => _voornaam; set => _voornaam = value; }
+        public string Naam
+        {
+            get => _naam;
+            set
+            {
+                _naam = value;
+                RaisedPropertyChanged("Naam");
+            }
+        }
+
+        public decimal Loon
+        {
+            get => _loon;
+            set
+            {
+                _loon = value;
+                RaisedPropertyChanged("Loon");
+            }
+        }
+
+        public string Voornaam
+        {
+            get => _voornaam;
+            set
+            {
+                _voornaam = value;
+                RaisedPropertyChanged("Voornaam");
+            }
+        }
         public BitmapImage Geslacht { get => _geslacht; set => _geslacht = value; }
         public string Gegevens { get => ToString(); }
+
+        public string Error
+        {
+            get
+            {
+                string error = "";
+                string result = "";
+
+                foreach (PropertyInfo prop in GetType().GetProperties())
+                {
+                    error = this[prop.Name];
+
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        result = error + Environment.NewLine;
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        public virtual string this[string columnName]
+        {
+            get
+            {
+                bool NaamIsEmpty = columnName == "Naam" && String.IsNullOrEmpty(Naam);
+                bool VoornaamIsEmpty = columnName == "Voornaam" && string.IsNullOrEmpty(Voornaam);
+                bool LoonIsKleinerDanNul = columnName == "Loon" && Loon < 0;
+
+                if (NaamIsEmpty)
+                {
+                    return "Naam is een verplicht veld!";
+                }
+                if (VoornaamIsEmpty)
+                {
+                    return "Voornaam is een verplicht veld!";
+                }
+                if (LoonIsKleinerDanNul)
+                {
+                    return "Loon moet groter of gelijk zijn dan 0!";
+                }
+
+                return null;
+            }
+        }
 
         public virtual decimal Verdiensten()
         {
