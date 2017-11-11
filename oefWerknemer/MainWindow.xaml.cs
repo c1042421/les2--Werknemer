@@ -22,6 +22,10 @@ namespace oefWerknemer
     {
         private string werknemerType;
         List<Werknemer> werknemers;
+        StukWerker stukWerker;
+        CommissieWerker commissieWerker;
+        UurWerker uurWerker;
+        private bool enabled = false;
 
         public MainWindow()
         {
@@ -31,51 +35,93 @@ namespace oefWerknemer
             lbOutput.ItemsSource = werknemers;
         }
 
-        private void txtToevoegen_Click(object sender, RoutedEventArgs e)
+        private void btnToevoegen_Click(object sender, RoutedEventArgs e)
         {
-            Werknemer werknemer;
+            Werknemer werknemer = null;
+            string geslachtUrl = rbMan.IsChecked ?? false ? "man.jpg" : "vrouw.jpg";
+            BitmapImage geslacht = MakeBitmapImageFor("images/" + geslachtUrl);
 
-            string naam = txtNaam.Text;
-            string voornaam = txtVoornaam.Text;
-
-            if (TextBoxesAreValid())
+            switch (werknemerType)
             {
-                decimal loon = decimal.Parse(txtLoon.Text);
-                int aantal;
-                string geslachtUrl = rbMan.IsChecked ?? false ? "man.jpg" : "vrouw.jpg"; 
-                BitmapImage geslacht = MakeBitmapImageFor("images/" + geslachtUrl);
+                case WerknemerType.CommissieWerker:
+                    werknemer = commissieWerker;
+                    werknemer.Geslacht = geslacht;
+                    break;
 
-                switch (werknemerType)
-                {
-                    case WerknemerType.CommissieWerker:
-                        decimal commissie = decimal.Parse(txtCommissie.Text);
-                        aantal = int.Parse(txtAantal.Text);
+                case WerknemerType.StukWerker:
+                    werknemer = stukWerker;
+                    werknemer.Geslacht = geslacht;
+                    break;
 
-                        werknemer = new CommissieWerker(naam, voornaam, loon, commissie, aantal, geslacht);
-                        break;
-
-                    case WerknemerType.StukWerker:
-                        aantal = int.Parse(txtAantal.Text);
-
-                        werknemer = new StukWerker(naam, voornaam, loon, aantal, geslacht);
-                        break;
-
-                    case WerknemerType.Uurwerker:
-                        aantal = int.Parse(txtAantal.Text);
-
-                        werknemer = new UurWerker(naam, voornaam, loon, aantal, geslacht);
-                        break;
-
-                    default:
-                        werknemer = new Werknemer(naam, voornaam, loon, geslacht);
-                        break;
-                }
-
-                VoegToeAanOutputAndRefresh(werknemer);
-            }else
-            {
-                ShowErrorMessage();
+                case WerknemerType.Uurwerker:
+                    werknemer = uurWerker;
+                    werknemer.Geslacht = geslacht;
+                    break;
             }
+
+            if (werknemer.isValid())
+            {
+                VoegToeAanOutputAndRefresh(werknemer);
+                toggleEnableRadioButtons();
+            }
+            else
+            {
+                MessageBox.Show("Niet alle velden zijn in orde!");
+            }
+
+        }
+
+        private void updateDataContextForType()
+        {
+            switch (werknemerType)
+            {
+                case WerknemerType.CommissieWerker:
+                    commissieWerker = new CommissieWerker();
+
+                    txtAantal.DataContext = commissieWerker;
+                    txtCommissie.DataContext = commissieWerker;
+                    txtLoon.DataContext = commissieWerker;
+                    txtNaam.DataContext = commissieWerker;
+                    txtVoornaam.DataContext = commissieWerker;
+
+                    InstellenBindingAantal();
+                    break;
+
+                case WerknemerType.StukWerker:
+                    stukWerker = new StukWerker();
+
+                    txtAantal.DataContext = stukWerker;
+                    txtCommissie.DataContext = stukWerker;
+                    txtLoon.DataContext = stukWerker;
+                    txtNaam.DataContext = stukWerker;
+                    txtVoornaam.DataContext = stukWerker;
+
+                    InstellenBindingAantal();
+                    break;
+
+                case WerknemerType.Uurwerker:
+                    uurWerker = new UurWerker();
+
+                    txtAantal.DataContext = uurWerker;
+                    txtCommissie.DataContext = uurWerker;
+                    txtLoon.DataContext = uurWerker;
+                    txtNaam.DataContext = uurWerker;
+                    txtVoornaam.DataContext = uurWerker;
+
+                    InstellenBindingAantal("Uren");
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void InstellenBindingAantal(string veld = "Aantal")
+        {
+            Binding myBinding = new Binding(veld);
+            myBinding.ValidatesOnDataErrors = true;
+            myBinding.UpdateSourceTrigger = UpdateSourceTrigger.LostFocus;
+            BindingOperations.SetBinding(txtAantal, TextBox.TextProperty, myBinding);
         }
 
         private BitmapImage MakeBitmapImageFor(string url)
@@ -91,70 +137,13 @@ namespace oefWerknemer
             lbOutput.ItemsSource = werknemers;
         }
 
-        private void ShowErrorMessage()
-        {
-            if (!LoonIsValid())
-            {
-                toonMessageBoxMet("Gelieve een numeriek getal in te geven bij loon");
-            } else if (!AantalIsValid())
-            {
-                toonMessageBoxMet("Gelieve een numeriek getal in te geven bij aantal");
-            } else if (!CommissieIsValid())
-            {
-                toonMessageBoxMet("Gelieve een numeriek getal in te geven bij commissie");
-            }
-        }
-
-        private void toonMessageBoxMet(string message)
-        {
-            MessageBox.Show(message, "Fout!", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-
-        private bool TextBoxesAreValid()
-        {
-            bool validation = LoonIsValid();
-            switch (werknemerType)
-            {
-                case WerknemerType.StukWerker:
-                case WerknemerType.Uurwerker:
-                    validation = validation && LoonIsValid() && AantalIsValid();
-                    break;
-                case WerknemerType.CommissieWerker:
-                    validation = validation && CommissieIsValid();
-                    break;
-            }
-
-            return validation;
-        }
-
-        private bool LoonIsValid()
-        {
-            return CheckTextBoxForDecimalValidation(txtLoon);
-        }
-
-        private bool CheckTextBoxForDecimalValidation(TextBox tb)
-        {
-            decimal dec;
-            return decimal.TryParse(tb.Text, out dec);
-        }
-
-        private bool CommissieIsValid()
-        {
-            return CheckTextBoxForDecimalValidation(txtCommissie);
-        }
-
-        private bool AantalIsValid()
-        {
-            int i;
-            return int.TryParse(txtAantal.Text, out i);
-        }
-
         private void radioButtonClicked(object sender, RoutedEventArgs e)
         {
             RadioButton rb = (RadioButton)sender;
 
             werknemerType = rb.Name;
             updateViewFor(werknemerType);
+            updateDataContextForType();
         }
 
         private void updateViewFor(string type)
@@ -163,7 +152,7 @@ namespace oefWerknemer
             {
                 case WerknemerType.CommissieWerker:
                     stpAantal.Visibility = Visibility.Visible;
-                    stpCommissie.Visibility = Visibility.Visible;                    
+                    stpCommissie.Visibility = Visibility.Visible;
                     break;
                 case WerknemerType.StukWerker:
                     stpAantal.Visibility = Visibility.Visible;
@@ -173,12 +162,66 @@ namespace oefWerknemer
                     stpAantal.Visibility = Visibility.Visible;
                     stpCommissie.Visibility = Visibility.Hidden;
                     break;
-                case WerknemerType.Werknemer:
-                    stpAantal.Visibility = Visibility.Hidden;
-                    stpCommissie.Visibility = Visibility.Hidden;
-                    break;
                 default:
                     break;
+            }
+        }
+
+        private void btnNieuw_Click(object sender, RoutedEventArgs e)
+        {
+            toggleEnableRadioButtons();
+        }
+
+        private void toggleEnableRadioButtons()
+        {
+            enabled = !enabled;
+
+            btnToevoegen.IsEnabled = enabled;
+            rbCommissieWerker.IsEnabled = enabled;
+            rbStukWerker.IsEnabled = enabled;
+            rbUurWerker.IsEnabled = enabled;
+            lbOutput.SelectedIndex = -1;
+        }
+
+        private void lbOutput_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            object werknemer = lbOutput.SelectedValue;
+
+            if (werknemer.GetType() == typeof(UurWerker))
+            {
+                UurWerker uurWerker = (UurWerker)werknemer;
+
+                InstellenBindingAantal("Uren");
+
+                txtAantal.DataContext = uurWerker;
+                txtCommissie.DataContext = uurWerker;
+                txtLoon.DataContext = uurWerker;
+                txtNaam.DataContext = uurWerker;
+                txtVoornaam.DataContext = uurWerker;
+            
+            } else if (werknemer.GetType() == typeof(CommissieWerker))
+            {
+                CommissieWerker commissieWerker = (CommissieWerker)werknemer;
+
+                InstellenBindingAantal();
+
+                txtAantal.DataContext = commissieWerker;
+                txtCommissie.DataContext = commissieWerker;
+                txtLoon.DataContext = commissieWerker;
+                txtNaam.DataContext = commissieWerker;
+                txtVoornaam.DataContext = commissieWerker;
+
+            } else if (werknemer.GetType() == typeof(StukWerker))
+            {
+                StukWerker stukWerker = (StukWerker)werknemer;
+
+                InstellenBindingAantal();
+
+                txtAantal.DataContext = stukWerker;
+                txtCommissie.DataContext = stukWerker;
+                txtLoon.DataContext = stukWerker;
+                txtNaam.DataContext = stukWerker;
+                txtVoornaam.DataContext = stukWerker;
             }
         }
     }

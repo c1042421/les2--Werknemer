@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:oefWerknemer"
         mc:Ignorable="d"
-        Title="Form1" Height="450
-        " Width="525">
+        Title="Form1" Height="700
+        " Width="600
+        ">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
@@ -15,56 +16,64 @@
             <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="50*"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
         </Grid.RowDefinitions>
-        <GroupBox Header="Type Werkenemer">
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <RadioButton IsChecked="True" Name="rbCommissieWerker" GroupName="werknemer" Content="Commissiewerker" Margin="5 0" Height="18" VerticalAlignment="Top" Click="radioButtonClicked"></RadioButton>
-                <RadioButton Name="rbStukWerker" GroupName="werknemer" Content="StukWerker" Margin="5 0" Click="radioButtonClicked"></RadioButton>
-                <RadioButton Name="rbUurWerker" GroupName="werknemer" Content="Uurwerker" Margin="5 0" Click="radioButtonClicked"></RadioButton>
-                <RadioButton Name="rbWerknemer"  GroupName="werknemer" Content="Werknemer" Margin="5 0" Click="radioButtonClicked"></RadioButton>
-            </StackPanel>
-        </GroupBox>
+        <StackPanel Orientation="Horizontal">
+            <GroupBox Header="Type Werkenemer">
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <RadioButton IsEnabled="False" IsChecked="True" Name="rbCommissieWerker" GroupName="werknemer" Content="Commissiewerker" Margin="5 0" Height="18" VerticalAlignment="Top" Click="radioButtonClicked"></RadioButton>
+                    <RadioButton IsEnabled="False" Name="rbStukWerker" GroupName="werknemer" Content="StukWerker" Margin="5 0" Click="radioButtonClicked"></RadioButton>
+                    <RadioButton IsEnabled="False" Name="rbUurWerker" GroupName="werknemer" Content="Uurwerker" Margin="5 0" Click="radioButtonClicked"></RadioButton>
+                </StackPanel>
+            </GroupBox>
+            <Button Width="150" Height="25" Margin="5" Content="Toevoegen" Name="btnToevoegen" IsEnabled="False" Click="btnToevoegen_Click"></Button>
+        </StackPanel>
+        
         <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="5">
             <Label Content="Naam" Margin="5" Width="100"></Label>
-            <TextBox Name="txtNaam" Margin="5" Width="200" Height="25"></TextBox>
+            <TextBox Name="txtNaam" Margin="5" Width="200" Height="25" Text="{Binding Path=Naam, ValidatesOnDataErrors=True}"></TextBox>
+            <Label Content="{Binding (Validation.Errors)[0].ErrorContent, ElementName=txtNaam}"></Label>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="5">
             <Label Content="Voornaam" Margin="5" Width="100"></Label>
-            <TextBox Name="txtVoornaam" Margin="5" Width="200" Height="25"></TextBox>
+            <TextBox Name="txtVoornaam" Margin="5" Width="200" Height="25" Text="{Binding Path=Voornaam, ValidatesOnDataErrors=True}"></TextBox>
+            <Label Content="{Binding (Validation.Errors)[0].ErrorContent, ElementName=txtVoornaam}"></Label>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="5">
             <Label Content="Loon" Margin="5" Width="100"></Label>
-            <TextBox Name="txtLoon" Margin="5" Width="200" Height="25"></TextBox>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10">
-                <RadioButton IsChecked="True" Name="rbMan" GroupName="geslacht">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="images/man.jpg" Height="15"  ></Image>
-                        <Label>Man</Label>
-                    </StackPanel>
-                </RadioButton>
-                <RadioButton Name="rbVrouw" GroupName="geslacht">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="images/vrouw.jpg" Height="15"></Image>
-                        <Label>Vrouw</Label>
-                    </StackPanel>
-                </RadioButton>
-            </StackPanel>
+            <TextBox Name="txtLoon" Margin="5" Width="200" Height="25" Text="{Binding Path=Loon, ValidatesOnDataErrors=True}"></TextBox>
+            <Label Content="{Binding (Validation.Errors)[0].ErrorContent, ElementName=txtLoon}"></Label>
         </StackPanel>
         <StackPanel Name="stpAantal" Orientation="Horizontal" Grid.Row="4" Margin="5">
             <Label Content="Aantal" Margin="5" Width="100"></Label>
             <TextBox Name="txtAantal" Margin="5" Width="200" Height="25"></TextBox>
+            <Label Content="{Binding (Validation.Errors)[0].ErrorContent, ElementName=txtAantal}"></Label>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Row="5" Margin="5">
             <StackPanel Name="stpCommissie" Width="320" Orientation="Horizontal">
                 <Label Content="Commissie" Margin="5" Width="100"></Label>
-                <TextBox Name="txtCommissie" Margin="5" Width="200" Height="25"></TextBox>
-            </StackPanel>
-            <StackPanel>
-                <Button Width="150" Height="25" Margin="5" Content="Toevoegen" Name="txtToevoegen" Click="txtToevoegen_Click"></Button>
+                <TextBox Name="txtCommissie" Margin="5" Width="200" Height="25" Text="{Binding Path=Commissie, ValidatesOnDataErrors=True}"></TextBox>
+                <Label Content="{Binding (Validation.Errors)[0].ErrorContent, ElementName=txtCommissie}"></Label>
             </StackPanel>
         </StackPanel>
-        <ListBox Name="lbOutput" Grid.Row="6" Margin="5">
+        <StackPanel Grid.Row="6" Orientation="Horizontal" VerticalAlignment="Center" Margin="10">
+            <RadioButton IsChecked="True" Name="rbMan" GroupName="geslacht">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="images/man.jpg" Height="15"  ></Image>
+                    <Label>Man</Label>
+                </StackPanel>
+            </RadioButton>
+            <RadioButton Name="rbVrouw" GroupName="geslacht">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="images/vrouw.jpg" Height="15"></Image>
+                    <Label>Vrouw</Label>
+                </StackPanel>
+            </RadioButton>
+            <Button Name="btnNieuw" Width="150" Height="25" Margin="5" VerticalAlignment="Center" Click="btnNieuw_Click">Nieuw</Button>
+        </StackPanel>
+        <ListBox Name="lbOutput" Grid.Row="7" Margin="5" SelectionChanged="lbOutput_SelectionChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -74,5 +83,9 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <StackPanel Orientation="Horizontal" Grid.Row="8" Margin="5">
+            <RadioButton Name="rbNaam" GroupName="sort">Volgens Naam</RadioButton>
+            <RadioButton Name="rbVerdiensten" GroupName="sort">Volgens Verdiensten</RadioButton>
+        </StackPanel>
     </Grid>
 </Window>
